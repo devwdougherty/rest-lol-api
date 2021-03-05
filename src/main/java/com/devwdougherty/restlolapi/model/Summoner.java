@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
-@Document(collection = "summoners")
+@Document(collection = "Summoners")
 public class Summoner {
 
     @Id
@@ -19,7 +19,7 @@ public class Summoner {
 
     private Integer profileIconId;
 
-    private Date revisionDate;
+    private Long revisionDate;
 
     private Integer summonerLevel;
 
@@ -27,7 +27,17 @@ public class Summoner {
 
     }
 
-    public Summoner(String id, String accountId, String puuId, String name, Integer profileIconId, Date revisionDate, Integer summonerLevel) {
+    public Summoner(Summoner summoner) {
+        this.id = summoner.getId();
+        this.accountId = summoner.getAccountId();
+        this.puuId = summoner.getPuuId();
+        this.name = summoner.getName();;
+        this.profileIconId = summoner.getProfileIconId();;
+        this.revisionDate = summoner.getRevisionDate();;
+        this.summonerLevel = summoner.getSummonerLevel();;
+    }
+
+    public Summoner(String id, String accountId, String puuId, String name, Integer profileIconId, Long revisionDate, Integer summonerLevel) {
         this.id = id;
         this.accountId = accountId;
         this.puuId = puuId;
@@ -77,11 +87,11 @@ public class Summoner {
         this.profileIconId = profileIconId;
     }
 
-    public Date getRevisionDate() {
+    public Long getRevisionDate() {
         return revisionDate;
     }
 
-    public void setRevisionDate(Date revisionDate) {
+    public void setRevisionDate(Long revisionDate) {
         this.revisionDate = revisionDate;
     }
 
