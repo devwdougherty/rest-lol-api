@@ -3,7 +3,9 @@ package com.devwdougherty.restlolapi.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Document(collection = "Summoners")
 public class Summoner {
@@ -11,16 +13,23 @@ public class Summoner {
     @Id
     private String id;
 
+    @NotNull
     private String accountId;
 
+    @NotNull
     private String puuId;
 
+    @NotNull
     private String name;
 
+    @Min(1)
+    @Max(999)
     private Integer profileIconId;
 
     private Long revisionDate;
 
+    @Min(1)
+    @Max(1000)
     private Integer summonerLevel;
 
     public Summoner() {

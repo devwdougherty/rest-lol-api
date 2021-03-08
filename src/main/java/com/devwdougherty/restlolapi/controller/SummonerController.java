@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.devwdougherty.restlolapi.util.Constants.BASE_API_URL_V1;
@@ -38,19 +39,12 @@ public class SummonerController {
 
         Summoner summonerMono;
 
-        try {
+        summonerMono = summonerService.findById(summonerId);
 
-            summonerMono = summonerService.findById(summonerId);
+        if (summonerMono.getId() == null) {
 
-            if (summonerMono.getId() == null) {
-
-                logger.error("Summoner not found!");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-        } catch (Exception e) {
-
-            logger.error("Exception: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logger.error("Summoner not found!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(summonerMono);
@@ -66,14 +60,7 @@ public class SummonerController {
 
         List<Summoner> summonerList;
 
-        try {
-
-            summonerList = summonerService.findAll();
-        } catch (Exception e) {
-
-            logger.error("Exception: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        summonerList = summonerService.findAll();
 
         return ResponseEntity.status(HttpStatus.OK).body(summonerList);
     }
@@ -82,20 +69,13 @@ public class SummonerController {
     @Operation(summary = "Crate a new summoner")
     @ApiResponse(responseCode = "201", description = "Summoner is created", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Summoner.class))})
     @ApiResponse(responseCode = "500", description = "Internal Server Error on the operation", content = {@Content})
-    public ResponseEntity<Summoner> saveSummoner(@RequestBody Summoner summoner) {
+    public ResponseEntity<Summoner> saveSummoner(@Valid @RequestBody Summoner summoner) {
 
         logger.info("SUMMONERS POST /summoner");
 
         Summoner newSummoner;
 
-        try {
-
-            newSummoner = summonerService.save(summoner);
-        } catch (Exception e) {
-
-            logger.error("Exception: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        newSummoner = summonerService.save(summoner);
 
         return ResponseEntity.status(HttpStatus.OK).body(newSummoner);
     }

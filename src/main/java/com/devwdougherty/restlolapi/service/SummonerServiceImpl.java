@@ -1,5 +1,6 @@
 package com.devwdougherty.restlolapi.service;
 
+import com.devwdougherty.restlolapi.exception.ResourceNotFoundException;
 import com.devwdougherty.restlolapi.model.Summoner;
 import com.devwdougherty.restlolapi.repository.SummonerRepository;
 import org.slf4j.Logger;
@@ -9,8 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class SummonerServiceImpl implements SummonerService {
@@ -25,13 +24,7 @@ public class SummonerServiceImpl implements SummonerService {
 
         List<Summoner> summonerList = new ArrayList<>();
 
-        try {
-
-            summonerList = summonerRepository.findAll();
-        } catch (Exception e) {
-
-            logger.error("Exception: " + e.toString());
-        }
+        summonerList = summonerRepository.findAll();
 
         logger.info("Summoners returned: " + summonerList.toString());
 
@@ -39,17 +32,11 @@ public class SummonerServiceImpl implements SummonerService {
     }
 
     @Override
-    public Summoner findById(String id) {
+    public Summoner findById(String summonerId) {
 
         Summoner summoner = new Summoner();
 
-        try {
-
-            summoner = summonerRepository.findById(id).get();
-        } catch (Exception e) {
-
-            logger.error("Exception: " + e.toString());
-        }
+        summoner = summonerRepository.findById(summonerId).orElseThrow(() -> new ResourceNotFoundException("Summoner ID: + " + summonerId + "not found."));
 
         logger.info("Summoner returned: " + summoner.toString());
 
@@ -61,15 +48,9 @@ public class SummonerServiceImpl implements SummonerService {
 
         Summoner summoner = new Summoner();
 
-        try {
+        summoner = summonerRepository.save(newSummoner);
 
-            summoner = summonerRepository.save(newSummoner);
-        } catch (Exception e) {
-
-            logger.error("Exception: " + e.toString());
-        }
-
-        logger.info("Summoner saved!");
+        logger.info("Summoner saved: " + summoner.toString());
 
         return summoner;
     }
