@@ -34,6 +34,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 request.getDescription(false)
         );
 
+        logger.error("MethodArgumentNotValidException threw: " + exceptionMessage.toString());
+
         return ResponseEntity.status(responseStatus != null ? responseStatus.value() : HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
@@ -55,6 +57,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 request.getDescription(false)
         );
 
+        logger.error("Exception threw: " + exceptionMessage.toString());
+
         return ResponseEntity.status(responseStatus != null ? responseStatus.value() : HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionMessage);
     }
 
@@ -74,6 +78,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 webRequest.getDescription(false)
         );
 
+        logger.error("ResourceNotFoundException threw: " + exceptionMessage.toString());
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionMessage);
     }
 
@@ -89,6 +95,8 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getClass().getSimpleName(),
                 request.getDescription(false)
         );
+
+        logger.error("ConstraintViolationException threw: " + exceptionMessage.toString());
 
         return ResponseEntity.status(responseStatus != null ? responseStatus.value() : HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }

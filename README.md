@@ -6,7 +6,7 @@
 - logs (feito)
 - lamba/stream (andamento)
 - junit
-- DTOs
+- DTOs (feito)
 - pageable
 - spring security
 - event driven

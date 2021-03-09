@@ -31,7 +31,7 @@ public class SummonerController {
 
     @GetMapping(value = "{summonerId}")
     @Operation(summary = "Get summoner by ID")
-    @ApiResponse(responseCode = "200", description = "Summoner found", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Summoner.class))})
+    @ApiResponse(responseCode = "200", description = "Summoner found", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = SummonerDTO.class))})
     @ApiResponse(responseCode = "404", description = "Summoner not found", content = {@Content})
     @ApiResponse(responseCode = "500", description = "Internal Server Error on the operation", content = {@Content})
     public ResponseEntity<SummonerDTO> getSummonerById(@PathVariable String summonerId) {
@@ -47,9 +47,9 @@ public class SummonerController {
 
     @GetMapping
     @Operation(summary = "Get a list of Summoners")
-    @ApiResponse(responseCode = "200", description = "Summoners list returned", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Summoner.class))})
+    @ApiResponse(responseCode = "200", description = "Summoners list returned", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = SummonerDTO.class))})
     @ApiResponse(responseCode = "500", description = "Internal Server Error on the operation", content = {@Content})
-    public ResponseEntity<List<SummonerDTO>> getSummoners() {
+    public ResponseEntity<List<SummonerDTO>> getAllSummoners() {
 
         logger.info("SUMMONERS GET ALL");
 
@@ -62,16 +62,46 @@ public class SummonerController {
 
     @PostMapping
     @Operation(summary = "Crate a new summoner")
-    @ApiResponse(responseCode = "201", description = "Summoner is created", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Summoner.class))})
+    @ApiResponse(responseCode = "201", description = "Summoner is created", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = SummonerDTO.class))})
     @ApiResponse(responseCode = "500", description = "Internal Server Error on the operation", content = {@Content})
-    public ResponseEntity<Summoner> saveSummoner(@Valid @RequestBody Summoner summoner) {
+    public ResponseEntity<SummonerDTO> saveSummoner(@Valid @RequestBody SummonerDTO summonerDTO) {
 
         logger.info("SUMMONERS POST /summoner");
 
-        Summoner newSummoner;
+        SummonerDTO newSummoner;
 
-        newSummoner = summonerService.save(summoner);
+        newSummoner = summonerService.save(summonerDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(newSummoner);
+    }
+
+    @PutMapping(value = "{summonerId}")
+    @Operation(summary = "Update a summoner by ID")
+    @ApiResponse(responseCode = "200", description = "Summoner updated", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = SummonerDTO.class))})
+    @ApiResponse(responseCode = "404", description = "Summoner not found", content = {@Content})
+    @ApiResponse(responseCode = "500", description = "Internal Server Error on the operation", content = {@Content})
+    public ResponseEntity<SummonerDTO> updateSummoner(@PathVariable String summonerId, @Valid @RequestBody SummonerDTO summonerDTO) {
+
+        logger.info("SUMMONERS PUT /summonerId");
+
+        SummonerDTO newSummoner;
+
+        newSummoner = summonerService.updateWholeSummoner(summonerId, summonerDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(newSummoner);
+    }
+
+    @DeleteMapping(value = "{summonerId}")
+    @Operation(summary = "Delete summoner by ID")
+    @ApiResponse(responseCode = "200", description = "Summoner deleted", content = {@Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = SummonerDTO.class))})
+    @ApiResponse(responseCode = "404", description = "Summoner not found", content = {@Content})
+    @ApiResponse(responseCode = "500", description = "Internal Server Error on the operation", content = {@Content})
+    public ResponseEntity deleteSummonerById(@PathVariable String summonerId) {
+
+        logger.info("SUMMONERS DELETE /summonerId");
+
+        summonerService.deleteSummonerById(summonerId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

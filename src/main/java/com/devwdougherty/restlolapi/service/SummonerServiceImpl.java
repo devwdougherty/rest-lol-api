@@ -5,6 +5,7 @@ import com.devwdougherty.restlolapi.exception.ResourceNotFoundException;
 import com.devwdougherty.restlolapi.model.Summoner;
 import com.devwdougherty.restlolapi.repository.SummonerRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +49,9 @@ public class SummonerServiceImpl implements SummonerService {
         Summoner summoner;
         SummonerDTO summonerDTO;
 
-        summoner = summonerRepository.findById(summonerId).orElseThrow(() -> new ResourceNotFoundException("Summoner ID: + " + summonerId + "not found."));
+        summoner = summonerRepository.findById(summonerId).orElseThrow(() -> new ResourceNotFoundException("Summoner ID: + " + summonerId + " not found."));
 
         summonerDTO = modelMapper.map(summoner, SummonerDTO.class);
-
-        /* Model Mapper conversion validation. */
-        modelMapper.createTypeMap(Summoner.class, SummonerDTO.class);
-        modelMapper.validate();
 
         logger.info("Summoner returned: " + summoner.toString());
 
@@ -62,14 +59,54 @@ public class SummonerServiceImpl implements SummonerService {
     }
 
     @Override
-    public Summoner save(Summoner newSummoner) {
+    public SummonerDTO save(SummonerDTO newSummoner) {
+
+        Summoner summoner;
+
+        summoner = modelMapper.map(newSummoner, Summoner.class);
+
+        summoner = summonerRepository.save(summoner);
+
+        newSummoner = modelMapper.map(summoner, SummonerDTO.class);
+
+        logger.info("Summoner saved: " + newSummoner.toString());
+
+        return newSummoner;
+    }
+
+    @Override
+    public SummonerDTO updateWholeSummoner(String summonerId, SummonerDTO summonerDTO) {
 
         Summoner summoner = new Summoner();
 
-        summoner = summonerRepository.save(newSummoner);
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
-        logger.info("Summoner saved: " + summoner.toString());
+        if (summonerRepository.existsById(summonerId)) {
 
-        return summoner;
+            summoner = modelMapper.map(summonerDTO, Summoner.class);
+            // TODO we continue receiving ID because we are not gererating, it's outside data.
+            //summoner.setId(summonerId);
+            summonerRepository.save(summoner);
+
+            logger.info("Summoner updated: " + summoner.toString());
+
+            return summonerDTO;
+        } else {
+
+            throw new ResourceNotFoundException("Summoner ID: " + summonerId + " not found.");
+        }
+    }
+
+    @Override
+    public void deleteSummonerById(String summonerId) {
+
+        if (summonerRepository.existsById(summonerId)) {
+
+            summonerRepository.deleteById(summonerId);
+            logger.info("Summoner " + summonerId + " deleted.");
+        } else {
+
+            throw new ResourceNotFoundException("Summoner ID: + " + summonerId + " not found.");
+        }
     }
 }

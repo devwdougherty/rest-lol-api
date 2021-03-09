@@ -65,4 +65,15 @@ public class ExceptionMessage {
     public void setPath(String path) {
         this.path = path;
     }
+
+    @Override
+    public String toString() {
+        return "ExceptionMessage{" +
+                "message='" + message + '\'' +
+                ", timestamp=" + timestamp +
+                ", statusCode=" + statusCode +
+                ", type='" + type + '\'' +
+                ", path='" + path + '\'' +
+                '}';
+    }
 }

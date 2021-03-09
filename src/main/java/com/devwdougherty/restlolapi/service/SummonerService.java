@@ -11,5 +11,9 @@ public interface SummonerService {
 
     SummonerDTO findById(String id);
 
-    Summoner save(Summoner summoner);
+    SummonerDTO save(SummonerDTO summonerDTO);
+
+    SummonerDTO updateWholeSummoner(String summonerId, SummonerDTO summonerDTO);
+
+    void deleteSummonerById(String id);
 }

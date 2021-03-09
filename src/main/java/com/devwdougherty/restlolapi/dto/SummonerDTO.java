@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 public class SummonerDTO {
 
-    @Id
+    @NotNull
     private String id;
 
     @NotNull
@@ -113,9 +113,8 @@ public class SummonerDTO {
 
     @Override
     public String toString() {
-        return "Summoner{" +
-                "id='" + id + '\'' +
-                ", accountId='" + accountId + '\'' +
+        return "SummonerDTO{" +
+                "accountId='" + accountId + '\'' +
                 ", puuId='" + puuId + '\'' +
                 ", name='" + name + '\'' +
                 ", profileIconId=" + profileIconId +
